@@ -122,7 +122,7 @@ class Enemy(PhysicsEntity):
             if self.rect().colliderect(self.game.player.rect()):
                 self.game.screenshake = max(16, self.game.screenshake)
                 self.game.sfx["hit"].play()
-                self.game.player.cooldown = 5
+                self.game.player.cooldown -= 35
                 for i in range(30):
                     angle = random.random() * math.pi * 2
                     speed = random.random() * 5
