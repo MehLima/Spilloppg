@@ -122,6 +122,7 @@ class Enemy(PhysicsEntity):
             if self.rect().colliderect(self.game.player.rect()):
                 self.game.screenshake = max(16, self.game.screenshake)
                 self.game.sfx["hit"].play()
+                self.game.player.cooldown = 5
                 for i in range(30):
                     angle = random.random() * math.pi * 2
                     speed = random.random() * 5
@@ -148,11 +149,12 @@ class Player(PhysicsEntity):
         self.jumps = 1
         self.wall_slide = False
         self.dashing = 0
+        self.cooldown = 1
     
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
-        
         self.air_time += 1
+        self.cooldown = max(0, self.cooldown - 1)
         
         if self.air_time > 120:
             if not self.game.dead:
@@ -234,8 +236,9 @@ class Player(PhysicsEntity):
             return True
     
     def dash(self):
-        if not self.dashing:
+        if self.cooldown <= 0:
             self.game.sfx["dash"].play()
+            self.cooldown = 65
             if self.flip:
                 self.dashing = -65
             else:

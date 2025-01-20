@@ -245,6 +245,7 @@ class Game:
                 self.player.velocity[0] = 0
                 self.player.velocity[1] = 0
                 self.player.dashing = 50
+                self.player.cooldown = 50
                 
                 transition_surf = pygame.Surface(self.display.get_size())
                 pygame.draw.circle(transition_surf, (255, 255, 255), (self.display.get_width() // 2, self.display.get_height() // 2), (30 - abs(self.transition)) * 18)
