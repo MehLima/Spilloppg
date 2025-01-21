@@ -37,8 +37,6 @@ class Game:
         
         self.movement = [False, False]
         
-        
-        
         self.assets = {
             "decor": load_images("tiles/decor"),
             "grass": load_images("tiles/grass"),
@@ -130,7 +128,6 @@ class Game:
             if not len(self.enemies):
                 self.transition += 1
                 
-                
                 if self.transition > 30:
                     self.level = min(self.level + 1, len(os.listdir("data/maps")) - 1)
                     self.load_level(self.level)
@@ -193,8 +190,7 @@ class Game:
                             self.projectiles.remove(projectile)
                             self.dead += 1
                             self.sfx["hit"].play()
-                            self.screenshake = max(20, self.screenshake)
-                            
+                            self.screenshake = max(20, self.screenshake)   
                         
             for spark in self.sparks.copy():
                 kill = spark.update()
@@ -214,8 +210,6 @@ class Game:
                     particle.pos[0] += math.sin(particle.animation.frame * 0.035) * 0.3
                 if kill:
                     self.particles.remove(particle)
-            
-                
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

@@ -172,6 +172,8 @@ class Player(PhysicsEntity):
             self.jumps = 2
             
         self.wall_slide = False
+        if (self.collisions["right"] or self.collisions["left"]):
+            self.velocity[1] += 0.1
         if (self.collisions["right"] or self.collisions["left"]) and self.air_time > 4:
             self.air_time = 5
             self.wall_slide = True
@@ -224,13 +226,13 @@ class Player(PhysicsEntity):
         if self.wall_slide:
             self.jumps = 2
             if self.flip and self.last_movement[0] < 0:
-                self.velocity[0] = 3
+                self.velocity[0] = 4
                 self.velocity[1] = -3.5
                 self.air_time = 5
                 self.jumps = max(0, self.jumps - 1)
                 return True
             elif not self.flip and self.last_movement[0] > 0:
-                self.velocity[0] = -3
+                self.velocity[0] = -4
                 self.velocity[1] = -3.5
                 self.air_time = 5
                 self.jumps = max(0, self.jumps - 1)
