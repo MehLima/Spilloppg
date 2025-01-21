@@ -223,9 +223,9 @@ class Game:
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
-                        self.movement[0] = 1.5
+                        self.movement[0] = 1.7
                     if event.key == pygame.K_d:
-                        self.movement[1] = 1.5
+                        self.movement[1] = 1.7
                     if self.player.dashing < 50:
                         if not self.transition:
                             if event.key == pygame.K_w:

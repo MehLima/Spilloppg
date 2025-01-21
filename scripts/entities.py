@@ -43,9 +43,11 @@ class PhysicsEntity:
                     entity_rect.right = rect.left
                     self.collisions["right"] = True
                     
+                    
                 if frame_movement[0] < 0:
                     entity_rect.left = rect.right
                     self.collisions["left"] = True
+                    
                     
                     
                 self.pos[0] = entity_rect.x
@@ -69,7 +71,7 @@ class PhysicsEntity:
             
         self.last_movement = movement
         
-        self.velocity[1] = min(5, self.velocity[1] + 0.1)
+        self.velocity[1] = min(8, self.velocity[1] + 0.15)
         
         if self.collisions["down"] or self.collisions["up"]:
             self.velocity[1] = 0
@@ -146,14 +148,18 @@ class Player(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, "player", pos, size)
         self.air_time = 0
-        self.jumps = 1
+        self.jumps = 2
         self.wall_slide = False
         self.dashing = 0
         self.cooldown = 1
     
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
-        self.air_time += 1
+        
+        if self.velocity[1] > 0:
+            self.air_time += 1
+        else:
+            self.air_time = 0
         self.cooldown = max(0, self.cooldown - 1)
         
         if self.air_time > 120:
@@ -163,7 +169,7 @@ class Player(PhysicsEntity):
         
         if self.collisions["down"]:
             self.air_time = 0
-            self.jumps = 1
+            self.jumps = 2
             
         self.wall_slide = False
         if (self.collisions["right"] or self.collisions["left"]) and self.air_time > 4:
@@ -216,24 +222,31 @@ class Player(PhysicsEntity):
             
     def jump(self):
         if self.wall_slide:
+            self.jumps = 2
             if self.flip and self.last_movement[0] < 0:
-                self.velocity[0] = 4
-                self.velocity[1] = -2.5
+                self.velocity[0] = 3
+                self.velocity[1] = -3.5
                 self.air_time = 5
                 self.jumps = max(0, self.jumps - 1)
                 return True
             elif not self.flip and self.last_movement[0] > 0:
-                self.velocity[0] = -4
-                self.velocity[1] = -2.5
+                self.velocity[0] = -3
+                self.velocity[1] = -3.5
                 self.air_time = 5
                 self.jumps = max(0, self.jumps - 1)
                 return True
-                
-        elif self.jumps:
-            self.velocity[1] = -3.3
-            self.jumps -= 1
-            self.air_time = 5
-            return True
+        elif not self.wall_slide:       
+            if self.jumps == 2:
+                self.velocity[1] = -4.0
+                self.jumps -= 1
+                self.air_time = 5
+                return True
+        
+            elif self.jumps == 1:
+                self.velocity[1] = -3.0
+                self.jumps -= 1
+                self.air_time = 5
+                return True
     
     def dash(self):
         if self.cooldown <= 0:

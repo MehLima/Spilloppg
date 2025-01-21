@@ -4,6 +4,7 @@ import pygame
 
 from scripts.utils import load_images
 from scripts.tilemap import Tilemap
+from tkinter import *
 
 RENDER_SCALE = 2.0
 
@@ -11,9 +12,16 @@ class Editor:
     def __init__(self):
         pygame.init()
 
+        win= Tk()
+        self.screen_width = win.winfo_screenwidth()
+        self.screen_height = win.winfo_screenheight()
+
+        self.res = (self.screen_width, self.screen_height)
+        self.res_half = (int(self.screen_width / 2), int(self.screen_height / 2))
+
         pygame.display.set_caption("Editor")
-        self.screen = pygame.display.set_mode((640, 480))
-        self.display = pygame.Surface((320, 240))
+        self.screen = pygame.display.set_mode(self.res)
+        self.display = pygame.Surface(self.res_half)
 
         self.clock = pygame.time.Clock()
         
@@ -125,7 +133,7 @@ class Editor:
                     if event.key == pygame.K_t:
                         self.tilemap.autotile()
                     if event.key == pygame.K_o:
-                        self.tilemap.save("map.json")
+                        self.tilemap.save("edit_map.json")
                     if event.key == pygame.K_g:
                         self.ongrid = not self.ongrid
                     if event.key == pygame.K_LSHIFT:
