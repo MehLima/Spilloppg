@@ -17,6 +17,7 @@ class PhysicsEntity:
         
         self.action = ""
         self.anim_offset = (-9, -3)
+        
         self.flip = False
         self.set_action("idle")
         
@@ -201,6 +202,7 @@ class Player(PhysicsEntity):
                 speed = random.random() * 0.5 + 0.5
                 pvelocity = [math.cos(angle) * speed, math.sin(angle) * speed]
                 self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=pvelocity, frame=random.randint(0, 7)))
+            print(pvelocity)
         if self.dashing > 0:
             self.dashing = max(0, self.dashing - 1)
         if self.dashing < 0:
@@ -244,10 +246,12 @@ class Player(PhysicsEntity):
                 self.air_time = 5
                 return True
         
-            elif self.jumps == 1:
+            elif self.jumps == 1 and not (self.collisions["right"] or self.collisions["left"]):
                 self.velocity[1] = -3.0
                 self.jumps -= 1
                 self.air_time = 5
+                for i in range(5):
+                    self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=[min(random.random() * 2 - random.random() * 2, 1.5), random.random() / 2], frame=random.randint(0, 7)))
                 return True
     
     def dash(self):
