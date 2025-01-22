@@ -249,7 +249,7 @@ class Player(PhysicsEntity):
                 self.velocity[1] = -3.0
                 self.jumps -= 1
                 self.air_time = 5
-                for i in range(5):
+                for i in range(13):
                     self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=[min(random.random() * 2 - random.random() * 2, 1.5), random.random() / 2], frame=random.randint(0, 7)))
                 return True
     
