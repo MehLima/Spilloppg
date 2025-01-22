@@ -191,7 +191,7 @@ class Game:
                             self.dead += 1
                             self.sfx["hit"].play()
                             self.screenshake = max(20, self.screenshake)   
-                        
+            
             for spark in self.sparks.copy():
                 kill = spark.update()
                 spark.render(self.display, offset=render_scroll)

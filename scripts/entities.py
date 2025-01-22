@@ -188,9 +188,10 @@ class Player(PhysicsEntity):
             self.set_action("wall_slide")
         
         if not self.wall_slide:
+            
             if self.air_time > 4:
                 self.set_action("jump")
-            elif movement[0] != 0:
+            elif movement[0] != 0 and not self.collisions["right"] or self.collisions["left"]:
                 self.set_action("run")
             else:
                 self.set_action("idle")
