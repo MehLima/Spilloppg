@@ -17,6 +17,7 @@ class PhysicsEntity:
         
         self.action = ""
         self.anim_offset = (-9, -3)
+        self.gun_anim_offset = (-3, -3)
         
         self.flip = False
         self.set_action("idle")
@@ -81,7 +82,9 @@ class PhysicsEntity:
         
     def render(self, surf, offset=(0, 0)):
         surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1]))
-        
+    
+    def render_gun(self, surf, offset=(0, 0)):
+        surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.gun_anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1]))
 class Enemy(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, "enemy", pos, size)
@@ -138,7 +141,7 @@ class Enemy(PhysicsEntity):
                 
             
     def render(self, surf, offset=(0, 0)):
-        super().render(surf, offset=offset)
+        super().render_gun(surf, offset=offset)
         
         if self.flip:
             surf.blit(pygame.transform.flip(self.game.assets["gun"], True, False), (self.rect().centerx - 4 - self.game.assets["gun"].get_width() - offset[0], self.rect().centery - offset[1]))
