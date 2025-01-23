@@ -50,6 +50,7 @@ class Game:
             "player/idle" : Animation(load_images("entities/Mist walker/idle"), img_dur=8),
             "player/run" : Animation(load_images("entities/Mist walker/run"), img_dur=4),
             "player/jump" : Animation(load_images("entities/Mist walker/jump")),
+            "player/fall" : Animation(load_images("entities/Mist walker/fall")),
             "player/wall_slide" : Animation(load_images("entities/Mist walker/wall_slide")),
             "particle/leaf": Animation(load_images("particles/leaf"), img_dur=20, loop=False),
             "particle/particle": Animation(load_images("particles/particle"), img_dur=6, loop=False),

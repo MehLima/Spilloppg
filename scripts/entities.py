@@ -162,6 +162,9 @@ class Player(PhysicsEntity):
         
         if self.velocity[1] > 0:
             self.air_time += 1
+        elif self.velocity[1] < 0:
+            self.air_time = 5
+            
         else:
             self.air_time = 0
         self.cooldown = max(0, self.cooldown - 1)
@@ -192,8 +195,11 @@ class Player(PhysicsEntity):
         
         if not self.wall_slide:
             
-            if self.air_time > 4:
+            if self.velocity[1] < 0:
                 self.set_action("jump")
+
+            elif self.air_time > 4:
+                self.set_action("fall")
             elif movement[0] != 0 and not self.collisions["right"] or self.collisions["left"]:
                 self.set_action("run")
             else:
