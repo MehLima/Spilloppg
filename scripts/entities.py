@@ -103,7 +103,7 @@ class Enemy(PhysicsEntity):
             self.walking = max(0, self.walking - 1)
             if not self.walking:
                 dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
-                if (abs(dis[1]) < 16):
+                if (abs(dis[1]) < 22):
                     if (self.flip and dis[0] < 0):
                         self.game.sfx["shoot"].play()
                         self.game.projectiles.append([[self.rect().centerx - 7, self.rect().centery], -1.5, 0])
