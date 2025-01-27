@@ -257,6 +257,7 @@ class Player(PhysicsEntity):
         
             elif self.jumps == 1 and not (self.collisions["right"] or self.collisions["left"]):
                 self.velocity[1] = -3.0
+                self.velocity[0] = 0
                 self.jumps -= 1
                 self.air_time = 5
                 for i in range(13):
