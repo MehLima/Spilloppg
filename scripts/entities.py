@@ -138,6 +138,22 @@ class Enemy(PhysicsEntity):
                 
                 
                 return True
+            
+        if abs(self.game.player.dash_up) >= 48:
+            if self.rect().colliderect(self.game.player.rect()):
+                self.game.screenshake = max(16, self.game.screenshake)
+                self.game.sfx["hit"].play()
+                self.game.player.cooldown -= 35
+            
+                for i in range(30):
+                    angle = random.random() * math.pi * 2
+                    speed = random.random() * 5
+                    self.game.sparks.append(Blood(self.rect().center, angle, 2 + random.random()))
+                    self.game.particles.append(Particle(self.game, "particle2", self.rect().center, velocity=[math.cos(angle + math.pi) * speed * 0.5, math.sin(angle + math.pi) * speed * 0.5], frame=random.randint(0, 7)))
+                
+                
+                
+                return True
                 
             
     def render(self, surf, offset=(0, 0)):
@@ -156,6 +172,7 @@ class Player(PhysicsEntity):
         self.wall_slide = False
         self.dashing = 0
         self.cooldown = 1
+        self.dash_up = 0
     
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
@@ -223,7 +240,27 @@ class Player(PhysicsEntity):
                 self.velocity[0] *= 0.1
             pvelocity = [abs(self.dashing) / self.dashing * random.random() * 3, 0]
             self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=pvelocity, frame=random.randint(0, 7)))
-                
+        
+        if abs(self.dash_up) in {60, 50}:
+            
+            for i in range(20):
+                angle = random.random() * math.pi * 2
+                speed = random.random() * 0.5 + 0.5
+                pvelocity = [math.sin(angle) * speed, math.cos(angle) * speed]
+                self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=pvelocity, frame=random.randint(0, 7)))
+        if self.collisions["up"] == True:
+            self.dash_up = 0
+        if self.dash_up > 0:
+            self.dash_up = max(0, self.dash_up - 1)
+        if self.dash_up < 0:
+            self.dash_up = min(0, self.dash_up + 1)
+        if abs(self.dash_up) > 50:
+            self.velocity[1] = abs(self.dash_up) / self.dash_up * 8
+            if abs(self.dash_up) == 51:
+                self.velocity[1] *= 0.1
+            pvelocity = [abs(self.dash_up) / self.dash_up * random.random() * 3, 0]
+            self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=pvelocity, frame=random.randint(0, 7)))
+
         if self.velocity[0] > 0:
             self.velocity[0] = max(self.velocity[0] - 0.1, 0)
         else:
@@ -256,7 +293,7 @@ class Player(PhysicsEntity):
                 return True
         
             elif self.jumps == 1 and not (self.collisions["right"] or self.collisions["left"]):
-                self.velocity[1] = -3.0
+                self.velocity[1] = -3.3
                 self.velocity[0] = 0
                 self.jumps -= 1
                 self.air_time = 5
@@ -272,3 +309,12 @@ class Player(PhysicsEntity):
                 self.dashing = -65
             else:
                 self.dashing = 65
+
+    def dashup(self):
+        if self.cooldown <= 0:
+            self.game.sfx["dash"].play()
+            self.cooldown = 65
+            if self.flip:
+                self.dash_up = -65
+            else:
+                self.dash_up = -65

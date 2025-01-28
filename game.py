@@ -85,6 +85,8 @@ class Game:
         self.load_level(self.level)
         
         self.screenshake = 0
+
+        self.w = False
         
     def load_level(self, map_id):
         self.tilemap.load("data/maps/" + str(map_id) + ".json")
@@ -224,15 +226,20 @@ class Game:
                     if self.player.dashing < 50:
                         if not self.transition:
                             if event.key == pygame.K_w:
+                                self.w = True
                                 if self.player.jump():
                                     self.sfx["jump"].play()
-                    if event.key == pygame.K_SPACE:
+                    if event.key == pygame.K_SPACE and self.w == True:
+                        self.player.dashup()
+                    elif event.key == pygame.K_SPACE:
                         self.player.dash()
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_a:
                         self.movement[0] = False
                     if event.key == pygame.K_d:
                         self.movement[1] = False
+                    if event.key == pygame.K_w:
+                        self.w = False
                         
             if self.transition:
                 self.movement[0] = 0
@@ -241,6 +248,7 @@ class Game:
                 self.player.velocity[1] = 0
                 self.player.dashing = 50
                 self.player.cooldown = 50
+                self.player.dash_up = 0
                 
                 transition_surf = pygame.Surface(self.display.get_size())
                 pygame.draw.circle(transition_surf, (255, 255, 255), (self.display.get_width() // 2, self.display.get_height() // 2), (30 - abs(self.transition)) * 18)
