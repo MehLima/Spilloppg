@@ -245,7 +245,7 @@ class Player(PhysicsEntity):
                 angle = random.random() * math.pi * 2
                 speed = random.random() * 0.5 + 0.5
                 pvelocity = [math.sin(angle) * speed, math.cos(angle) * speed]
-                self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=pvelocity, frame=random.randint(0, 7)))
+                self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=[0, 2], frame=random.randint(0, 7)))
         if self.collisions["up"] == True:
             self.dash_up = 0
         if self.dash_up > 0:
@@ -256,7 +256,7 @@ class Player(PhysicsEntity):
             self.velocity[1] = abs(self.dash_up) / self.dash_up * 8
             if abs(self.dash_up) == 51:
                 self.velocity[1] *= 0.1
-            pvelocity = [abs(self.dash_up) / self.dash_up * random.random() * 3, 0]
+            pvelocity = [abs(self.dash_up) / self.dash_up * min(random.random() * 2 - random.random() * 2, 1.5), 2]
             self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=pvelocity, frame=random.randint(0, 7)))
 
         if self.velocity[0] > 0:
