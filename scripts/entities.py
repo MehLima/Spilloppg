@@ -202,8 +202,6 @@ class Player(PhysicsEntity):
             self.air_time = max(5, self.air_time - 1)
 
         self.cooldown = max(0, self.cooldown - 1)
-
-        print(self.air_time)
         
         if self.air_time > 120:
             if not self.game.dead:
@@ -297,7 +295,7 @@ class Player(PhysicsEntity):
         if abs(self.dash_down) > 50:
             self.velocity[1] = abs(self.dash_down) / self.dash_down * 8
             
-            pvelocity = [abs(self.dash_down) / self.dash_down * min(random.random() * 2 - random.random() * 2, 1.5), 2]
+            pvelocity = [abs(self.dash_down) / self.dash_down * min(random.random() * 2 - random.random() * 2, 1.5), -1.5]
             self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=pvelocity, frame=random.randint(0, 7)))
 
         if self.velocity[0] > 0:
@@ -306,7 +304,7 @@ class Player(PhysicsEntity):
             self.velocity[0] = min(self.velocity[0] + 0.1, 0)
     
     def render(self, surf, offset=(0, 0)):
-        if abs(self.dashing) <= 50:
+        if abs(self.dashing or self.dash_down or self.dash_up) <= 50:
             super().render(surf, offset=offset)
             
     def jump(self):
