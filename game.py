@@ -67,11 +67,11 @@ class Game:
             "ambience" : pygame.mixer.Sound("data/sfx/ambience.wav"),
         }
         
-        self.sfx["ambience"].set_volume(0.3)
+        self.sfx["ambience"].set_volume(0.2)
         self.sfx["shoot"].set_volume(0.4)
-        self.sfx["hit"].set_volume(0.8)
-        self.sfx["dash"].set_volume(0.2)
-        self.sfx["jump"].set_volume(0.6)
+        self.sfx["hit"].set_volume(0.4)
+        self.sfx["dash"].set_volume(0.1)
+        self.sfx["jump"].set_volume(0.1)
 
         self.clouds = Clouds(self.assets["clouds"], count=16)
         
@@ -87,6 +87,8 @@ class Game:
         self.screenshake = 0
 
         self.w = False
+
+        self.s = False
         
     def load_level(self, map_id):
         self.tilemap.load("data/maps/" + str(map_id) + ".json")
@@ -115,7 +117,7 @@ class Game:
         
     def run(self):
         pygame.mixer.music.load("data/music.wav")
-        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.set_volume(0.3)
         pygame.mixer.music.play(-1)
         
         self.sfx["ambience"].play(-1)
@@ -225,11 +227,15 @@ class Game:
                         self.movement[1] = 1.7
                     if self.player.dashing < 50:
                         if not self.transition:
+                            if event.key == pygame.K_s:
+                                self.s = True
                             if event.key == pygame.K_w:
                                 self.w = True
                                 if self.player.jump():
                                     self.sfx["jump"].play()
-                    if event.key == pygame.K_SPACE and self.w == True:
+                    if event.key == pygame.K_SPACE and self.s == True:
+                        self.player.dashdown()
+                    elif event.key == pygame.K_SPACE and self.w == True:
                         self.player.dashup()
                     elif event.key == pygame.K_SPACE:
                         self.player.dash()
@@ -240,6 +246,8 @@ class Game:
                         self.movement[1] = False
                     if event.key == pygame.K_w:
                         self.w = False
+                    if event.key == pygame.K_s:
+                        self.s = False
                         
             if self.transition:
                 self.movement[0] = 0
@@ -249,6 +257,7 @@ class Game:
                 self.player.dashing = 50
                 self.player.cooldown = 50
                 self.player.dash_up = 0
+                self.player.dash_down = 0
                 
                 transition_surf = pygame.Surface(self.display.get_size())
                 pygame.draw.circle(transition_surf, (255, 255, 255), (self.display.get_width() // 2, self.display.get_height() // 2), (30 - abs(self.transition)) * 18)

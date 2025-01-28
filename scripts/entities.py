@@ -154,6 +154,24 @@ class Enemy(PhysicsEntity):
                 
                 
                 return True
+        
+        if abs(self.game.player.dash_down) >= 48:
+            if self.rect().colliderect(self.game.player.rect()):
+                self.game.screenshake = max(16, self.game.screenshake)
+                self.game.sfx["hit"].play()
+                self.game.player.cooldown -= 35
+                self.game.player.velocity[1] = -4
+                self.game.player.dash_down = 0
+            
+                for i in range(30):
+                    angle = random.random() * math.pi * 2
+                    speed = random.random() * 5
+                    self.game.sparks.append(Blood(self.rect().center, angle, 2 + random.random()))
+                    self.game.particles.append(Particle(self.game, "particle2", self.rect().center, velocity=[math.cos(angle + math.pi) * speed * 0.5, math.sin(angle + math.pi) * speed * 0.5], frame=random.randint(0, 7)))
+                
+                
+                
+                return True
                 
             
     def render(self, surf, offset=(0, 0)):
@@ -173,6 +191,7 @@ class Player(PhysicsEntity):
         self.dashing = 0
         self.cooldown = 1
         self.dash_up = 0
+        self.dash_down = 0
     
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
@@ -183,6 +202,8 @@ class Player(PhysicsEntity):
             self.air_time = max(5, self.air_time - 1)
 
         self.cooldown = max(0, self.cooldown - 1)
+
+        print(self.air_time)
         
         if self.air_time > 120:
             if not self.game.dead:
@@ -259,6 +280,26 @@ class Player(PhysicsEntity):
             pvelocity = [abs(self.dash_up) / self.dash_up * min(random.random() * 2 - random.random() * 2, 1.5), 2]
             self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=pvelocity, frame=random.randint(0, 7)))
 
+        if abs(self.dash_down) in {60, 50}:
+            
+            for i in range(20):
+                angle = random.random() * math.pi * 2
+                speed = random.random() * 0.5 + 0.5
+                pvelocity = [math.sin(angle) * speed, math.cos(angle) * speed]
+                self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=[0, 2], frame=random.randint(0, 7)))
+            if self.collisions["down"] == True:
+                self.dash_down = 0
+                
+        if self.dash_down > 0:
+            self.dash_down = max(0, self.dash_down - 1)
+        if self.dash_down < 0:
+            self.dash_down = min(0, self.dash_down + 1)
+        if abs(self.dash_down) > 50:
+            self.velocity[1] = abs(self.dash_down) / self.dash_down * 8
+            
+            pvelocity = [abs(self.dash_down) / self.dash_down * min(random.random() * 2 - random.random() * 2, 1.5), 2]
+            self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=pvelocity, frame=random.randint(0, 7)))
+
         if self.velocity[0] > 0:
             self.velocity[0] = max(self.velocity[0] - 0.1, 0)
         else:
@@ -296,7 +337,7 @@ class Player(PhysicsEntity):
                 self.jumps -= 1
                 self.air_time = 5
                 for i in range(13):
-                    self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=[min(random.random() * 2 - random.random() * 2, 1.5), random.random() / 2], frame=random.randint(0, 7)))
+                    self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=[min(random.random() * 2 - random.random() * 2, 1.5), random.random() / 2 * -1], frame=random.randint(0, 7)))
                 return True
     
     def dash(self):
@@ -316,3 +357,13 @@ class Player(PhysicsEntity):
                 self.dash_up = -62
             else:
                 self.dash_up = -62
+
+    def dashdown(self):
+        if self.air_time >= 5:
+            if self.cooldown <= 0:
+                self.game.sfx["dash"].play()
+                self.cooldown = 65
+                if self.flip:
+                    self.dash_down = 62
+                else:
+                    self.dash_down = 62
