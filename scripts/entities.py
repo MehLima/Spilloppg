@@ -180,10 +180,8 @@ class Player(PhysicsEntity):
         if self.velocity[1] > 0:
             self.air_time += 1
         elif self.velocity[1] < 0:
-            self.air_time -= 1
-            
-        else:
-            self.air_time = 0
+            self.air_time = max(5, self.air_time - 1)
+
         self.cooldown = max(0, self.cooldown - 1)
         
         if self.air_time > 120:
