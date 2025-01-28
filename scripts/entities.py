@@ -180,7 +180,7 @@ class Player(PhysicsEntity):
         if self.velocity[1] > 0:
             self.air_time += 1
         elif self.velocity[1] < 0:
-            self.air_time = 5
+            self.air_time -= 1
             
         else:
             self.air_time = 0
@@ -315,6 +315,6 @@ class Player(PhysicsEntity):
             self.game.sfx["dash"].play()
             self.cooldown = 65
             if self.flip:
-                self.dash_up = -65
+                self.dash_up = -62
             else:
-                self.dash_up = -65
+                self.dash_up = -62
