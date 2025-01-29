@@ -161,6 +161,7 @@ class Enemy(PhysicsEntity):
                 self.game.sfx["hit"].play()
                 self.game.player.cooldown -= 35
                 self.game.player.velocity[1] = -4
+                self.game.player.jumps = 1
                 self.game.player.dash_down = 0
             
                 for i in range(30):
