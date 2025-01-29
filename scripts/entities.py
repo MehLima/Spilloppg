@@ -17,7 +17,7 @@ class PhysicsEntity:
         
         self.action = ""
         self.anim_offset = (-9, -2)
-        self.gun_anim_offset = (-9, -3)
+        self.gun_anim_offset = (-9, -2)
         
         self.flip = False
         self.set_action("idle")
@@ -113,38 +113,38 @@ class Enemy(PhysicsEntity):
 
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
         if (abs(dis[1]) < 22):
-            if (not self.flip and dis[0] > 0):
-                self.set_action("shoot")
-                self.fire_cd = max(0, self.fire_cd - 1)
-                if self.fire_cd == 0:
-                    self.game.sfx["shoot"].play()
-                    self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery -10], 1.5, 0])
-                    for i in range(4):
-                        self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
-
             if (self.flip and dis[0] < 0):
                 self.set_action("shoot")
                 self.fire_cd = max(0, self.fire_cd - 1)
                 if self.fire_cd == 0:
                     self.game.sfx["shoot"].play()
-                    self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery -5], -1.5, 0])
+                    self.game.projectiles.append([[self.rect().centerx -2, self.rect().centery -5], -1.5, 0])
+                    for i in range(4):
+                        self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
+
+            elif (not self.flip and dis[0] > 0):
+                self.set_action("shoot")
+                self.fire_cd = max(0, self.fire_cd - 1)
+                if self.fire_cd == 0:
+                    self.game.sfx["shoot"].play()
+                    self.game.projectiles.append([[self.rect().centerx -2, self.rect().centery -10], 1.5, 0])
                     for i in range(4):
                         self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
             
             elif movement[0] != 0:
                 self.set_action("run")
-                self.fire_cd = min(45, self.fire_cd + 10)
+                self.fire_cd = min(60, self.fire_cd + 10)
             else:
                 self.set_action("idle")
-                self.fire_cd = min(45, self.fire_cd + 10)
+                self.fire_cd = min(60, self.fire_cd + 10)
         
         
         elif movement[0] != 0:
             self.set_action("run")
-            self.fire_cd = min(45, self.fire_cd + 10)
+            self.fire_cd = min(60, self.fire_cd + 10)
         else:
             self.set_action("idle")
-            self.fire_cd = min(45, self.fire_cd + 10)
+            self.fire_cd = min(60, self.fire_cd + 10)
         
         if self.fire_cd == 0:
             self.fire_cd = min(120, self.fire_cd + 120)
