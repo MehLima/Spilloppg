@@ -56,7 +56,6 @@ class Game:
             "particle/leaf": Animation(load_images("particles/leaf"), img_dur=20, loop=False),
             "particle/particle": Animation(load_images("particles/particle"), img_dur=6, loop=False),
             "particle/particle2": Animation(load_images("particles/particle2"), img_dur=6, loop=False),
-            "gun" : load_image("gun.png"),
             "projectile" : load_image("projectile.png"),
         }
         

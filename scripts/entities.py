@@ -90,6 +90,7 @@ class Enemy(PhysicsEntity):
         super().__init__(game, "enemy", pos, size)
         
         self.walking = 0
+        self.fire_cd = 30
         
     def update(self, tilemap, movement=(0, 0)):
         
@@ -104,32 +105,49 @@ class Enemy(PhysicsEntity):
             else:
                 self.flip = not self.flip
             self.walking = max(0, self.walking - 1)
-            if not self.walking:
-                dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
-                if (abs(dis[1]) < 22):
-                    if (self.flip and dis[0] < 0):
-                        self.set_action("shoot")
-                        self.game.sfx["shoot"].play()
-                        self.game.projectiles.append([[self.rect().centerx - 7, self.rect().centery], -1.5, 0])
-                        for i in range(4):
-                            self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5 + math.pi, 2 + random.random()))
-                    if (not self.flip and dis[0] > 0):
-                        self.set_action("shoot")
-                        self.game.sfx["shoot"].play()
-                        self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery], 1.5, 0])
-                        for i in range(4):
-                            self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
+
         elif random.random() < 0.01:
             self.walking = random.randint(30, 120)
         
         super().update(tilemap, movement=movement)
+
+        dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
+        if (abs(dis[1]) < 22):
+            if (not self.flip and dis[0] > 0):
+                self.set_action("shoot")
+                self.fire_cd = max(0, self.fire_cd - 1)
+                if self.fire_cd == 0:
+                    self.game.sfx["shoot"].play()
+                    self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery], 1.5, 0])
+                    for i in range(4):
+                        self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
+
+            if (self.flip and dis[0] < 0):
+                self.set_action("shoot")
+                self.fire_cd = max(0, self.fire_cd - 1)
+                if self.fire_cd == 0:
+                    self.game.sfx["shoot"].play()
+                    self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery], -1.5, 0])
+                    for i in range(4):
+                        self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
+            
+            elif movement[0] != 0:
+                self.set_action("run")
+                self.fire_cd = min(30, self.fire_cd + 10)
+            else:
+                self.set_action("idle")
+                self.fire_cd = min(30, self.fire_cd + 10)
         
-        if movement[0] != 0:
+        
+        elif movement[0] != 0:
             self.set_action("run")
+            self.fire_cd = min(30, self.fire_cd + 10)
         else:
             self.set_action("idle")
+            self.fire_cd = min(30, self.fire_cd + 10)
         
-        
+        if self.fire_cd == 0:
+            self.fire_cd = min(90, self.fire_cd + 90)
 
             
         if abs(self.game.player.dashing) >= 48 and self.game.dead == 0:
