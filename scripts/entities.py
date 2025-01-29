@@ -124,7 +124,7 @@ class Enemy(PhysicsEntity):
         else:
             self.set_action("idle")
             
-        if abs(self.game.player.dashing) >= 48:
+        if abs(self.game.player.dashing) >= 48 and self.game.dead == 0:
             if self.rect().colliderect(self.game.player.rect()):
                 self.game.screenshake = max(16, self.game.screenshake)
                 self.game.sfx["hit"].play()
@@ -139,7 +139,7 @@ class Enemy(PhysicsEntity):
                 
                 return True
             
-        if abs(self.game.player.dash_up) >= 48:
+        if abs(self.game.player.dash_up) >= 48 and self.game.dead == 0:
             if self.rect().colliderect(self.game.player.rect()):
                 self.game.screenshake = max(16, self.game.screenshake)
                 self.game.sfx["hit"].play()
@@ -155,7 +155,7 @@ class Enemy(PhysicsEntity):
                 
                 return True
         
-        if abs(self.game.player.dash_down) >= 48:
+        if abs(self.game.player.dash_down) >= 48 and self.game.dead == 0:
             if self.rect().colliderect(self.game.player.rect()):
                 self.game.screenshake = max(16, self.game.screenshake)
                 self.game.sfx["hit"].play()
@@ -206,7 +206,7 @@ class Player(PhysicsEntity):
         
         if self.air_time > 120:
             if not self.game.dead:
-                self.game.screenshake = max(16, self.game.screenshake)
+                self.game.screenshake = max(30, self.game.screenshake)
             self.game.dead += 1
         
         if self.collisions["down"]:
