@@ -47,7 +47,7 @@ class Game:
             "clouds" : load_images("clouds"),
             "enemy/idle" : Animation(load_images("entities/enemy/idle"), img_dur=6),
             "enemy/run" : Animation(load_images("entities/enemy/run"), img_dur=12),
-            "enemy/shoot" : Animation(load_images("entities/enemy/shoot"), img_dur=6),
+            "enemy/shoot" : Animation(load_images("entities/enemy/shoot"), img_dur=9),
             "player/idle" : Animation(load_images("entities/Mist walker/idle"), img_dur=8),
             "player/run" : Animation(load_images("entities/Mist walker/run"), img_dur=4),
             "player/jump" : Animation(load_images("entities/Mist walker/jump")),
@@ -77,7 +77,7 @@ class Game:
         
         self.scaled_background = pygame.transform.scale(self.assets["background"], self.res_half)
         
-        self.player = Player(self, (50, 50), (22, 35))
+        self.player = Player(self, (50, 50), (22, 37))
         
         self.tilemap = Tilemap(self, tile_size=16)
         
@@ -105,7 +105,7 @@ class Game:
                 self.player.pos = spawner["pos"]
                 self.player.air_time = 0
             else:
-                self.enemies.append(Enemy(self, spawner["pos"], (8, 15)))
+                self.enemies.append(Enemy(self, spawner["pos"], (22, 32)))
         
         self.projectiles = []
         self.particles = []

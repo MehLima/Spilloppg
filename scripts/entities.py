@@ -16,8 +16,8 @@ class PhysicsEntity:
         self.collisions = {"up": False, "down": False, "right": False, "left": False}
         
         self.action = ""
-        self.anim_offset = (-9, -3)
-        self.gun_anim_offset = (-3, -3)
+        self.anim_offset = (-9, -2)
+        self.gun_anim_offset = (-9, -3)
         
         self.flip = False
         self.set_action("idle")
@@ -97,7 +97,7 @@ class Enemy(PhysicsEntity):
         
         
         if self.walking:
-            if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 23)):
+            if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
                 if (self.collisions["right"] or self.collisions["left"]):
                     self.flip = not self.flip
                 else:
@@ -118,7 +118,7 @@ class Enemy(PhysicsEntity):
                 self.fire_cd = max(0, self.fire_cd - 1)
                 if self.fire_cd == 0:
                     self.game.sfx["shoot"].play()
-                    self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery], 1.5, 0])
+                    self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery -10], 1.5, 0])
                     for i in range(4):
                         self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
 
@@ -127,27 +127,27 @@ class Enemy(PhysicsEntity):
                 self.fire_cd = max(0, self.fire_cd - 1)
                 if self.fire_cd == 0:
                     self.game.sfx["shoot"].play()
-                    self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery], -1.5, 0])
+                    self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery -5], -1.5, 0])
                     for i in range(4):
                         self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
             
             elif movement[0] != 0:
                 self.set_action("run")
-                self.fire_cd = min(30, self.fire_cd + 10)
+                self.fire_cd = min(45, self.fire_cd + 10)
             else:
                 self.set_action("idle")
-                self.fire_cd = min(30, self.fire_cd + 10)
+                self.fire_cd = min(45, self.fire_cd + 10)
         
         
         elif movement[0] != 0:
             self.set_action("run")
-            self.fire_cd = min(30, self.fire_cd + 10)
+            self.fire_cd = min(45, self.fire_cd + 10)
         else:
             self.set_action("idle")
-            self.fire_cd = min(30, self.fire_cd + 10)
+            self.fire_cd = min(45, self.fire_cd + 10)
         
         if self.fire_cd == 0:
-            self.fire_cd = min(90, self.fire_cd + 90)
+            self.fire_cd = min(120, self.fire_cd + 120)
 
             
         if abs(self.game.player.dashing) >= 48 and self.game.dead == 0:
