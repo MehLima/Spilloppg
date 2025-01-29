@@ -46,7 +46,7 @@ class Game:
             "background" : load_image("background.png"),
             "clouds" : load_images("clouds"),
             "enemy/idle" : Animation(load_images("entities/enemy/idle"), img_dur=6),
-            "enemy/run" : Animation(load_images("entities/enemy/run"), img_dur=4),
+            "enemy/run" : Animation(load_images("entities/enemy/run"), img_dur=12),
             "player/idle" : Animation(load_images("entities/Mist walker/idle"), img_dur=8),
             "player/run" : Animation(load_images("entities/Mist walker/run"), img_dur=4),
             "player/jump" : Animation(load_images("entities/Mist walker/jump")),

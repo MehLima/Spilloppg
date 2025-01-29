@@ -177,11 +177,7 @@ class Enemy(PhysicsEntity):
             
     def render(self, surf, offset=(0, 0)):
         super().render_gun(surf, offset=offset)
-        
-        if self.flip:
-            surf.blit(pygame.transform.flip(self.game.assets["gun"], True, False), (self.rect().centerx - 4 - self.game.assets["gun"].get_width() - offset[0], self.rect().centery - offset[1]))
-        else:
-            surf.blit(self.game.assets["gun"], (self.rect().centerx + 4 - offset[0], self.rect().centery - offset[1]))
+
 
 class Player(PhysicsEntity):
     def __init__(self, game, pos, size):
