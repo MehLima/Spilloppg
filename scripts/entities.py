@@ -219,7 +219,6 @@ class Enemy_m(PhysicsEntity):
     def update(self, tilemap, movement=(0, 0)):
         
         
-        
         if self.walking:
             if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
                 if (self.collisions["right"] or self.collisions["left"]):
@@ -235,44 +234,39 @@ class Enemy_m(PhysicsEntity):
         
         super().update(tilemap, movement=movement)
 
+        
+
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
         if (abs(dis[1]) < 22):
             if (self.flip and dis[0] < 0):
-                self.set_action("shoot")
-                self.fire_cd = max(0, self.fire_cd - 1)
-                if self.fire_cd == 0:
-                    self.game.sfx["shoot"].play()
-                    self.game.projectiles.append([[self.rect().centerx -2, self.rect().centery -5], -1.5, 0])
-                    for i in range(4):
-                        self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
+                self.walking == 1
+                
+                
 
             elif (not self.flip and dis[0] > 0):
-                self.set_action("shoot")
-                self.fire_cd = max(0, self.fire_cd - 1)
-                if self.fire_cd == 0:
-                    self.game.sfx["shoot"].play()
-                    self.game.projectiles.append([[self.rect().centerx -2, self.rect().centery -10], 1.5, 0])
-                    for i in range(4):
-                        self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
+                self.walking == 10
+                
+                
             
             elif movement[0] != 0:
                 self.set_action("run_m")
-                self.fire_cd = min(60, self.fire_cd + 10)
+                
             else:
                 self.set_action("idle_m")
-                self.fire_cd = min(60, self.fire_cd + 10)
+                
         
         
         elif movement[0] != 0:
             self.set_action("run_m")
-            self.fire_cd = min(60, self.fire_cd + 10)
+            
         else:
             self.set_action("idle_m")
-            self.fire_cd = min(60, self.fire_cd + 10)
-        
-        if self.fire_cd == 0:
-            self.fire_cd = min(120, self.fire_cd + 120)
 
+        if movement[0] != 0:
+            self.set_action("run_m")
+            
+        else:
+            self.set_action("idle_m")
             
         if abs(self.game.player.dashing) >= 48 and self.game.dead == 0:
             if self.rect().colliderect(self.game.player.rect()):
@@ -311,6 +305,7 @@ class Enemy_m(PhysicsEntity):
                 self.game.sfx["hit"].play()
                 self.game.player.cooldown -= 35
                 self.game.player.velocity[1] = -4
+                self.game.player.iframes += 10
                 self.game.player.jumps = 1
                 self.game.player.dash_down = 0
             
@@ -324,8 +319,10 @@ class Enemy_m(PhysicsEntity):
                 
                 return True
 
-        if abs(self.game.player.dash_down) < 48 and abs(self.game.player.dash_up) < 48 and abs(self.game.player.dashing) < 48 and self.game.dead == 0:
+        if abs(self.game.player.dash_down) < 40 and abs(self.game.player.dash_up) < 48 and abs(self.game.player.dashing) < 48 and self.game.dead == 0 and self.game.player.iframes == 0:
             if self.rect().colliderect(self.game.player.rect()):
+                self.game.screenshake = max(30, self.game.screenshake)
+                self.game.sfx["hit"].play()
                 self.game.dead += 1
             
     def render(self, surf, offset=(0, 0)):
@@ -341,9 +338,12 @@ class Player(PhysicsEntity):
         self.cooldown = 1
         self.dash_up = 0
         self.dash_down = 0
+        self.iframes = 0
     
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
+
+        self.iframes -= max(0, self.iframes - 1)
         
         if self.velocity[1] > 0:
             self.air_time += 1 * (self.velocity[1] // 4)
