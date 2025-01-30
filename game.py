@@ -5,7 +5,7 @@ import os
 import pygame
 
 from scripts.utils import load_image, load_images, Animation
-from scripts.entities import PhysicsEntity, Player, Enemy
+from scripts.entities import PhysicsEntity, Player, Enemy, Enemy_m
 from scripts.tilemap import Tilemap
 from scripts.clouds import Clouds
 from scripts.particle import Particle
@@ -102,12 +102,14 @@ class Game:
             self.leaf_spawners.append(pygame.Rect(4 + bush["pos"][0], 1 + bush["pos"][1], 18, 10))
             
         self.enemies = []         
-        for spawner in self.tilemap.extract([("spawners", 0), ("spawners", 1)]):
+        for spawner in self.tilemap.extract([("spawners", 0), ("spawners", 1), ("spawners", 2)]):
             if spawner["variant"] == 0:
                 self.player.pos = spawner["pos"]
                 self.player.air_time = 0
-            else:
+            elif spawner["variant"] == 1:
                 self.enemies.append(Enemy(self, spawner["pos"], (22, 32)))
+            else:
+                self.enemies.append(Enemy_m(self, spawner["pos"], (22, 32)))
         
         self.projectiles = []
         self.particles = []

@@ -85,6 +85,7 @@ class PhysicsEntity:
     
     def render_gun(self, surf, offset=(0, 0)):
         surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.gun_anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1]))
+
 class Enemy(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, "enemy", pos, size)
@@ -204,6 +205,124 @@ class Enemy(PhysicsEntity):
     def render(self, surf, offset=(0, 0)):
         super().render_gun(surf, offset=offset)
 
+class Enemy_m(PhysicsEntity):
+    def __init__(self, game, pos, size):
+        super().__init__(game, "enemy", pos, size)
+        
+        self.walking = 0
+        self.fire_cd = 30
+        
+    def update(self, tilemap, movement=(0, 0)):
+        
+        
+        
+        if self.walking:
+            if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
+                if (self.collisions["right"] or self.collisions["left"]):
+                    self.flip = not self.flip
+                else:
+                    movement = (movement[0] - 0.6 if self.flip else 0.6, movement[1])
+            else:
+                self.flip = not self.flip
+            self.walking = max(0, self.walking - 1)
+
+        elif random.random() < 0.01:
+            self.walking = random.randint(30, 120)
+        
+        super().update(tilemap, movement=movement)
+
+        dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
+        if (abs(dis[1]) < 22):
+            if (self.flip and dis[0] < 0):
+                self.set_action("shoot")
+                self.fire_cd = max(0, self.fire_cd - 1)
+                if self.fire_cd == 0:
+                    self.game.sfx["shoot"].play()
+                    self.game.projectiles.append([[self.rect().centerx -2, self.rect().centery -5], -1.5, 0])
+                    for i in range(4):
+                        self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
+
+            elif (not self.flip and dis[0] > 0):
+                self.set_action("shoot")
+                self.fire_cd = max(0, self.fire_cd - 1)
+                if self.fire_cd == 0:
+                    self.game.sfx["shoot"].play()
+                    self.game.projectiles.append([[self.rect().centerx -2, self.rect().centery -10], 1.5, 0])
+                    for i in range(4):
+                        self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
+            
+            elif movement[0] != 0:
+                self.set_action("run_m")
+                self.fire_cd = min(60, self.fire_cd + 10)
+            else:
+                self.set_action("idle_m")
+                self.fire_cd = min(60, self.fire_cd + 10)
+        
+        
+        elif movement[0] != 0:
+            self.set_action("run_m")
+            self.fire_cd = min(60, self.fire_cd + 10)
+        else:
+            self.set_action("idle_m")
+            self.fire_cd = min(60, self.fire_cd + 10)
+        
+        if self.fire_cd == 0:
+            self.fire_cd = min(120, self.fire_cd + 120)
+
+            
+        if abs(self.game.player.dashing) >= 48 and self.game.dead == 0:
+            if self.rect().colliderect(self.game.player.rect()):
+                self.game.screenshake = max(16, self.game.screenshake)
+                self.game.sfx["hit"].play()
+                self.game.player.cooldown -= 35
+                for i in range(30):
+                    angle = random.random() * math.pi * 2
+                    speed = random.random() * 5
+                    self.game.sparks.append(Blood(self.rect().center, angle, 2 + random.random()))
+                    self.game.particles.append(Particle(self.game, "particle2", self.rect().center, velocity=[math.cos(angle + math.pi) * speed * 0.5, math.sin(angle + math.pi) * speed * 0.5], frame=random.randint(0, 7)))
+                
+                
+                
+                return True
+            
+        if abs(self.game.player.dash_up) >= 48 and self.game.dead == 0:
+            if self.rect().colliderect(self.game.player.rect()):
+                self.game.screenshake = max(16, self.game.screenshake)
+                self.game.sfx["hit"].play()
+                self.game.player.cooldown -= 35
+            
+                for i in range(30):
+                    angle = random.random() * math.pi * 2
+                    speed = random.random() * 5
+                    self.game.sparks.append(Blood(self.rect().center, angle, 2 + random.random()))
+                    self.game.particles.append(Particle(self.game, "particle2", self.rect().center, velocity=[math.cos(angle + math.pi) * speed * 0.5, math.sin(angle + math.pi) * speed * 0.5], frame=random.randint(0, 7)))
+                
+                
+                
+                return True
+        
+        if abs(self.game.player.dash_down) >= 48 and self.game.dead == 0:
+            if self.rect().colliderect(self.game.player.rect()):
+                self.game.screenshake = max(16, self.game.screenshake)
+                self.game.sfx["hit"].play()
+                self.game.player.cooldown -= 35
+                self.game.player.velocity[1] = -4
+                self.game.player.jumps = 1
+                self.game.player.dash_down = 0
+            
+                for i in range(30):
+                    angle = random.random() * math.pi * 2
+                    speed = random.random() * 5
+                    self.game.sparks.append(Blood(self.rect().center, angle, 2 + random.random()))
+                    self.game.particles.append(Particle(self.game, "particle2", self.rect().center, velocity=[math.cos(angle + math.pi) * speed * 0.5, math.sin(angle + math.pi) * speed * 0.5], frame=random.randint(0, 7)))
+                
+                
+                
+                return True
+                
+            
+    def render(self, surf, offset=(0, 0)):
+        super().render_gun(surf, offset=offset)
 
 class Player(PhysicsEntity):
     def __init__(self, game, pos, size):
