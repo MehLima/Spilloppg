@@ -17,7 +17,8 @@ class PhysicsEntity:
         
         self.action = ""
         self.anim_offset = (-9, -2)
-        self.gun_anim_offset = (-9, -2)
+        self.gun_anim_offset = (-9, -3)
+        self.melee_anim_offset = (-12, -6)
         
         self.flip = False
         self.set_action("idle")
@@ -84,7 +85,10 @@ class PhysicsEntity:
         surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1]))
     
     def render_gun(self, surf, offset=(0, 0)):
-        surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.gun_anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1]))
+        surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.gun_anim_offset[0], self.pos[1] - offset[1] + self.gun_anim_offset[1]))
+
+    def render_melee(self, surf, offset=(0, 0)):
+        surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.melee_anim_offset[0], self.pos[1] - offset[1] + self.melee_anim_offset[1]))
 
 class Enemy(PhysicsEntity):
     def __init__(self, game, pos, size):
@@ -319,10 +323,13 @@ class Enemy_m(PhysicsEntity):
                 
                 
                 return True
-                
+
+        if abs(self.game.player.dash_down) < 48 and abs(self.game.player.dash_up) < 48 and abs(self.game.player.dashing) < 48 and self.game.dead == 0:
+            if self.rect().colliderect(self.game.player.rect()):
+                self.game.dead += 1
             
     def render(self, surf, offset=(0, 0)):
-        super().render_gun(surf, offset=offset)
+        super().render_melee(surf, offset=offset)
 
 class Player(PhysicsEntity):
     def __init__(self, game, pos, size):

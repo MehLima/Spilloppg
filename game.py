@@ -109,7 +109,7 @@ class Game:
             elif spawner["variant"] == 1:
                 self.enemies.append(Enemy(self, spawner["pos"], (22, 32)))
             else:
-                self.enemies.append(Enemy_m(self, spawner["pos"], (22, 32)))
+                self.enemies.append(Enemy_m(self, spawner["pos"], (12, 29)))
         
         self.projectiles = []
         self.particles = []
