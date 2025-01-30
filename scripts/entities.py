@@ -231,7 +231,20 @@ class Enemy_m(PhysicsEntity):
 
         elif random.random() < 0.01:
             self.walking = random.randint(30, 120)
-        
+
+        dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
+        if (abs(dis[1]) < 55):
+            if (self.flip and dis[0] < 0):
+                movement = (-1.0, movement[1])
+            elif (not self.flip and dis[0] > 0):
+                movement = (1.0, movement[1])
+            if (self.collisions["right"]):
+                movement = (1.0, -4.0)
+            if (self.collisions["left"]):
+                movement = (-1.0, -4.0)
+
+            
+            
         super().update(tilemap, movement=movement)
 
         
