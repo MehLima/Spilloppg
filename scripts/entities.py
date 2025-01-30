@@ -253,14 +253,6 @@ class Enemy_m(PhysicsEntity):
                 
             else:
                 self.set_action("idle_m")
-                
-        
-        
-        elif movement[0] != 0:
-            self.set_action("run_m")
-            
-        else:
-            self.set_action("idle_m")
 
         if movement[0] != 0:
             self.set_action("run_m")
