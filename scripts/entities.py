@@ -344,11 +344,11 @@ class Player(PhysicsEntity):
     
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
-        
+        print(self.velocity[1])
         if self.velocity[1] > 0:
-            self.air_time += 1
+            self.air_time += 1 * (self.velocity[1] // 4)
         elif self.velocity[1] < 0:
-            self.air_time = max(5, self.air_time - 1)
+            self.air_time = max(5, self.air_time - 1 * ((self.velocity[1] * -1) // 4))
 
         self.cooldown = max(0, self.cooldown - 1)
         
