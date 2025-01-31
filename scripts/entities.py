@@ -93,6 +93,7 @@ class Enemy(PhysicsEntity):
         
         self.walking = 0
         self.fire_cd = 30
+        self.air_time = 0
         
     def update(self, tilemap, movement=(0, 0)):
         
@@ -110,6 +111,15 @@ class Enemy(PhysicsEntity):
             self.walking = random.randint(30, 120)
         
         super().update(tilemap, movement=movement)
+
+        if self.velocity[1] > 0:
+            self.air_time += 1 * (self.velocity[1] // 4)
+
+        if self.collisions["down"]:
+            self.air_time = 0
+
+        if self.air_time > 120:
+            return True
 
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
         if (abs(dis[1]) < 22):
@@ -220,11 +230,11 @@ class Enemy_m(PhysicsEntity):
             self.walking = random.randint(30, 120)
 
         if (abs(dis[1]) < 55 and abs(dis[1]) > -35):
-            if (self.flip and dis[0] < 0):
+            if (self.flip and -150 < dis[0] < 0):
                 movement = (-1.5, movement[1])
                 if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
                     self.flip = self.flip
-            elif (not self.flip and dis[0] > 0):
+            elif (not self.flip and 150 > dis[0] > 0):
                 movement = (1.5, movement[1])
                 if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
                     self.flip = self.flip
@@ -246,10 +256,10 @@ class Enemy_m(PhysicsEntity):
 
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
         if (abs(dis[1]) < 22):
-            if (self.flip and -250 < dis[0] < 0):
+            if (self.flip and -150 < dis[0] < 0):
                 self.walking == 1
                 
-            elif (not self.flip and 250 > dis[0] > 0):
+            elif (not self.flip and 150 > dis[0] > 0):
                 self.walking == 10
             
             elif movement[0] != 0:
