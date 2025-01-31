@@ -103,8 +103,7 @@ class Game:
         for bush in self.tilemap.extract([("large_decor", 1)], keep=True):
             self.leaf_spawners.append(pygame.Rect(4 + bush["pos"][0], 1 + bush["pos"][1], 18, 10))
             
-        self.enemies = []   
-        self.enemy_m =  []    
+        self.enemies = []       
         for spawner in self.tilemap.extract([("spawners", 0), ("spawners", 1), ("spawners", 2)]):
             if spawner["variant"] == 0:
                 self.player.pos = spawner["pos"]
@@ -113,9 +112,6 @@ class Game:
                 self.enemies.append(Enemy(self, spawner["pos"], (22, 32)))
             else:
                 self.enemies.append(Enemy_m(self, spawner["pos"], (12, 29)))
-                self.enemy_m.append(Enemy_m(self, spawner["pos"], (12, 29)))
-
-
         
         self.projectiles = []
         self.particles = []
@@ -123,7 +119,6 @@ class Game:
         
         self.scroll = [0, 0]
         self.dead = 0
-        self.dead_m = 0
         self.transition = -30
         
     def run(self):
@@ -177,7 +172,7 @@ class Game:
             self.clouds.render(self.display_no_overlay, offset=render_scroll)
             
             self.tilemap.render(self.display, offset=render_scroll)
-            for enemy in self.enemies.copy():
+            for enemy in self.enemies:
                 kill = enemy.update(self.tilemap, (0, 0))
                 enemy.render(self.display, offset=render_scroll)
                 if kill:
@@ -266,7 +261,7 @@ class Game:
                 self.player.velocity[0] = 0
                 self.player.velocity[1] = 0
                 self.player.dashing = 50
-                self.player.cooldown = 50
+                self.player.cooldown = 30
                 self.player.dash_up = 0
                 self.player.dash_down = 0
                 
