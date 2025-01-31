@@ -233,9 +233,21 @@ class Game:
                     if event.key == pygame.K_a:
                         self.movement[0] = 1.7
                         self.move = True
+                        if self.player.wall_slide:
+                            self.player.wall_slide = False
+                            self.player.velocity[0] = -2
+                            self.player.jumps = 1
+                            self.movement[1] = 0
+
                     if event.key == pygame.K_d:
                         self.movement[1] = 1.7
                         self.move = True
+                        if self.player.wall_slide:
+                            self.player.wall_slide = False
+                            self.player.velocity[0] = 2
+                            self.player.jumps = 1
+                            self.movement[0] = 0
+                        
                     if self.player.dashing < 50:
                         if not self.transition:
                             if event.key == pygame.K_s:

@@ -333,7 +333,6 @@ class Enemy_m(PhysicsEntity):
 
         if abs(self.game.player.dash_down) < 40 and abs(self.game.player.dash_up) < 48 and abs(self.game.player.dashing) < 48 and self.game.dead == 0:
             if self.rect().colliderect(self.game.player.rect()):
-                print("")
                 
                 self.game.screenshake = max(30, self.game.screenshake)
                 self.game.sfx["hit"].play()
@@ -410,15 +409,11 @@ class Player(PhysicsEntity):
             self.game.movement[0] = 1.7
             self.let_go = 1
         
-        
-        print(self.game.move)
-        if self.let_go == 1 and self.air_time_start == 1:
+        if self.let_go == 1 and self.air_time_start == 1 and self.velocity[1] > 0.4:
             self.game.movement[0] = 0
             self.game.movement[1] = 0
             self.let_go = 0
         
-
-
         if not self.wall_slide:
             
             if self.velocity[1] < 0:
@@ -502,7 +497,7 @@ class Player(PhysicsEntity):
     def jump(self):
         if self.wall_slide:
             self.jumps = 2
-            if self.flip and self.last_movement[0] < 0:
+            if self.flip and self.last_movement[0] < 0.1:
                 self.velocity[0] = 4
                 self.velocity[1] = -3.5
                 self.air_time = 5
@@ -511,7 +506,7 @@ class Player(PhysicsEntity):
                 self.game.movement[0] = 0
                 return True
                 
-            elif not self.flip and self.last_movement[0] > 0:
+            elif not self.flip and self.last_movement[0] > -0.1:
                 self.velocity[0] = -4
                 self.velocity[1] = -3.5
                 self.air_time = 5
