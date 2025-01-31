@@ -262,6 +262,7 @@ class Game:
                         self.player.dashup()
                     elif event.key == pygame.K_SPACE:
                         self.player.dash()
+
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_a:
                         self.movement[0] = False
