@@ -230,11 +230,11 @@ class Enemy_m(PhysicsEntity):
             self.walking = random.randint(30, 120)
 
         if (abs(dis[1]) < 55 and abs(dis[1]) > -35):
-            if (self.flip and -150 < dis[0] < 0):
+            if (self.flip and -200 < dis[0] < 0):
                 movement = (-1.5, movement[1])
                 if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
                     self.flip = self.flip
-            elif (not self.flip and 150 > dis[0] > 0):
+            elif (not self.flip and 200 > dis[0] > 0):
                 movement = (1.5, movement[1])
                 if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
                     self.flip = self.flip
@@ -256,10 +256,10 @@ class Enemy_m(PhysicsEntity):
 
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
         if (abs(dis[1]) < 22):
-            if (self.flip and -150 < dis[0] < 0):
+            if (self.flip and -200 < dis[0] < 0):
                 self.walking == 1
                 
-            elif (not self.flip and 150 > dis[0] > 0):
+            elif (not self.flip and 200 > dis[0] > 0):
                 self.walking == 10
             
             elif movement[0] != 0:
