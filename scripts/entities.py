@@ -354,6 +354,7 @@ class Player(PhysicsEntity):
         self.iframes = 30
         self.let_go = 0
         self.air_time_start = 0
+        
 
     def update(self, tilemap, movement=(0, 0)):
         
@@ -413,6 +414,10 @@ class Player(PhysicsEntity):
             self.game.movement[0] = 0
             self.game.movement[1] = 0
             self.let_go = 0
+            if self.game.check_hold[pygame.K_a]:
+                self.game.movement[0] = 1.7
+            if self.game.check_hold[pygame.K_d]:
+                self.game.movement[1] = 1.7
         
         if not self.wall_slide:
             
@@ -489,6 +494,14 @@ class Player(PhysicsEntity):
             self.velocity[0] = max(self.velocity[0] - 0.1, 0)
         else:
             self.velocity[0] = min(self.velocity[0] + 0.1, 0)
+            
+        if self.game.check_hold[pygame.K_a]:
+            self.game.movement[0] = 1.7
+        elif self.game.check_hold[pygame.K_d]:
+            self.game.movement[1] = 1.7
+        else:
+            self.game.movement[1] = 0
+            self.game.movement[0] = 0
     
     def render(self, surf, offset=(0, 0)):
         if abs(self.dashing or self.dash_down or self.dash_up) <= 50:
@@ -504,6 +517,10 @@ class Player(PhysicsEntity):
                 self.jumps = max(0, self.jumps - 1)
                 self.game.movement[1] = 0
                 self.game.movement[0] = 0
+                
+                if self.game.check_hold[pygame.K_a]:
+                    self.game.movement[0] = 1.7
+            
                 return True
                 
             elif not self.flip and self.last_movement[0] > -0.1:
@@ -513,6 +530,10 @@ class Player(PhysicsEntity):
                 self.jumps = max(0, self.jumps - 1)
                 self.game.movement[1] = 0
                 self.game.movement[0] = 0
+                
+                if self.game.check_hold[pygame.K_d]:
+                    self.game.movement[1] = 1.7
+                    
                 return True
                 
         elif not self.wall_slide:       

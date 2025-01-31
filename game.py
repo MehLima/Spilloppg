@@ -276,6 +276,8 @@ class Game:
                         self.w = False
                     if event.key == pygame.K_s:
                         self.s = False
+                        
+            self.check_hold = pygame.key.get_pressed()
 
             if self.move == False and not self.player.wall_slide and self.player.jumps == 2:
                 self.movement[1] = 0
