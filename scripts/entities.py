@@ -113,7 +113,7 @@ class Enemy(PhysicsEntity):
 
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
         if (abs(dis[1]) < 22):
-            if (self.flip and dis[0] < 0):
+            if (self.flip and -250 < dis[0] < 0):
                 self.set_action("shoot")
                 self.fire_cd = max(0, self.fire_cd - 1)
                 if self.fire_cd == 0:
@@ -122,7 +122,7 @@ class Enemy(PhysicsEntity):
                     for i in range(4):
                         self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
 
-            elif (not self.flip and dis[0] > 0):
+            elif (not self.flip and 250 > dis[0] > 0):
                 self.set_action("shoot")
                 self.fire_cd = max(0, self.fire_cd - 1)
                 if self.fire_cd == 0:
@@ -147,7 +147,7 @@ class Enemy(PhysicsEntity):
         
         if self.fire_cd == 0:
             self.fire_cd = min(120, self.fire_cd + 120)
-
+        
         if abs(self.game.player.dashing) >= 48 and self.game.dead == 0:
             if self.rect().colliderect(self.game.player.rect()):
                 self.game.screenshake = max(16, self.game.screenshake)
@@ -246,10 +246,10 @@ class Enemy_m(PhysicsEntity):
 
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
         if (abs(dis[1]) < 22):
-            if (self.flip and dis[0] < 0):
+            if (self.flip and -250 < dis[0] < 0):
                 self.walking == 1
                 
-            elif (not self.flip and dis[0] > 0):
+            elif (not self.flip and 250 > dis[0] > 0):
                 self.walking == 10
             
             elif movement[0] != 0:
@@ -329,11 +329,11 @@ class Player(PhysicsEntity):
         self.cooldown = 1
         self.dash_up = 0
         self.dash_down = 0
-        self.iframes = 0
+        self.iframes = 10
     
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
-
+        
         self.iframes -= max(0, self.iframes - 1)
         
         if self.velocity[1] > 0:
