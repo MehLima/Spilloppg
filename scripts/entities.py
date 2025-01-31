@@ -353,12 +353,19 @@ class Player(PhysicsEntity):
         self.dash_up = 0
         self.dash_down = 0
         self.iframes = 30
-    
+        self.let_go = 0
+        self.air_time_start = 0
+
     def update(self, tilemap, movement=(0, 0)):
+        
         super().update(tilemap, movement=movement)
         
         self.iframes = max(0, self.iframes - 1)
         
+        if not self.collisions["down"] or not self.wall_slide:
+            self.air_time_start += 1
+        
+
         if self.velocity[1] > 0:
             self.air_time += 1 * (self.velocity[1] // 4)
         elif self.velocity[1] < 0:
@@ -371,16 +378,14 @@ class Player(PhysicsEntity):
                 self.game.screenshake = max(30, self.game.screenshake)
             self.game.dead += 1
         
-        if self.collisions["down"]:
-            self.air_time = 0
-            self.jumps = 2
+        
             
         self.wall_slide = False
-        if (self.collisions["right"] or self.collisions["left"]):
-            self.velocity[1] += 0.1
+        
         if (self.collisions["right"] or self.collisions["left"]) and self.air_time > 4:
             self.air_time = 5
             self.wall_slide = True
+            self.air_time_start = 0
             self.velocity[1] = min(self.velocity[1], 0.5)
             if self.collisions["right"]:
                 self.flip = False
@@ -390,6 +395,30 @@ class Player(PhysicsEntity):
                 
             self.set_action("wall_slide")
         
+        if self.collisions["down"]:
+            self.air_time = 0
+            self.jumps = 2
+            self.air_time_start = 0
+
+        
+        if self.wall_slide and self.flip == False and self.air_time >= 4:
+            self.velocity[0] = 1.1
+            self.game.movement[1] = 1.7
+            self.let_go = 1
+        elif self.wall_slide and self.flip == True and self.air_time > 4:
+            self.velocity[0] = -1.1
+            self.game.movement[0] = 1.7
+            self.let_go = 1
+        
+        
+        print(self.game.move)
+        if self.let_go == 1 and self.air_time_start == 1:
+            self.game.movement[0] = 0
+            self.game.movement[1] = 0
+            self.let_go = 0
+        
+
+
         if not self.wall_slide:
             
             if self.velocity[1] < 0:
@@ -478,6 +507,8 @@ class Player(PhysicsEntity):
                 self.velocity[1] = -3.5
                 self.air_time = 5
                 self.jumps = max(0, self.jumps - 1)
+                self.game.movement[1] = 0
+                self.game.movement[0] = 0
                 return True
                 
             elif not self.flip and self.last_movement[0] > 0:
@@ -485,6 +516,8 @@ class Player(PhysicsEntity):
                 self.velocity[1] = -3.5
                 self.air_time = 5
                 self.jumps = max(0, self.jumps - 1)
+                self.game.movement[1] = 0
+                self.game.movement[0] = 0
                 return True
                 
         elif not self.wall_slide:       
@@ -493,13 +526,13 @@ class Player(PhysicsEntity):
                 self.jumps -= 1
                 self.air_time = 5
                 return True
-        
                 
             elif self.jumps == 1 and not (self.collisions["right"] or self.collisions["left"]):
                 self.velocity[1] = -3.3
                 self.velocity[0] = 0
                 self.jumps -= 1
                 self.air_time = 5
+
                 for i in range(13):
                     self.game.particles.append(Particle(self.game, "particle", self.rect().center, velocity=[min(random.random() * 2 - random.random() * 2, 1.5), random.random() / 2 * -1], frame=random.randint(0, 7)))
                 return True

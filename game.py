@@ -36,6 +36,7 @@ class Game:
         self.clock = pygame.time.Clock()
         
         self.movement = [False, False]
+        self.move = False
         
         self.assets = {
             "decor": load_images("tiles/decor"),
@@ -221,6 +222,8 @@ class Game:
                     particle.pos[0] += math.sin(particle.animation.frame * 0.035) * 0.3
                 if kill:
                     self.particles.remove(particle)
+
+            
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -229,8 +232,10 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
                         self.movement[0] = 1.7
+                        self.move = True
                     if event.key == pygame.K_d:
                         self.movement[1] = 1.7
+                        self.move = True
                     if self.player.dashing < 50:
                         if not self.transition:
                             if event.key == pygame.K_s:
@@ -248,13 +253,21 @@ class Game:
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_a:
                         self.movement[0] = False
+                        if event.key == pygame.K_d:
+                            self.move = False
                     if event.key == pygame.K_d:
                         self.movement[1] = False
+                        if event.key == pygame.K_a:
+                            self.move = False
                     if event.key == pygame.K_w:
                         self.w = False
                     if event.key == pygame.K_s:
                         self.s = False
-                        
+
+            if self.move == False and not self.player.wall_slide and self.player.jumps == 2:
+                self.movement[1] = 0
+                self.movement[0] = 0
+              
             if self.transition:
                 self.movement[0] = 0
                 self.movement[1] = 0
