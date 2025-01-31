@@ -194,6 +194,7 @@ class Enemy(PhysicsEntity):
                 self.game.player.velocity[1] = -4
                 self.game.player.jumps = 1
                 self.game.player.dash_down = 0
+                self.game.player.iframes += 10
             
                 for i in range(30):
                     angle = random.random() * math.pi * 2
@@ -214,10 +215,10 @@ class Enemy_m(PhysicsEntity):
         super().__init__(game, "enemy", pos, size)
         
         self.walking = 0
-        self.fire_cd = 30
+        self.air_time = 0
         
     def update(self, tilemap, movement=(0, 0)):
-        
+        dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
         
         if self.walking:
             if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
@@ -232,34 +233,41 @@ class Enemy_m(PhysicsEntity):
         elif random.random() < 0.01:
             self.walking = random.randint(30, 120)
 
-        dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
-        if (abs(dis[1]) < 55):
+        if (abs(dis[1]) < 55 and abs(dis[1]) > -35):
             if (self.flip and dis[0] < 0):
-                movement = (-1.0, movement[1])
+                movement = (-1.5, movement[1])
+                if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
+                    self.flip = self.flip
             elif (not self.flip and dis[0] > 0):
-                movement = (1.0, movement[1])
+                movement = (1.5, movement[1])
+                if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
+                    self.flip = self.flip
             if (self.collisions["right"]):
                 movement = (1.0, -4.0)
             if (self.collisions["left"]):
                 movement = (-1.0, -4.0)
+            
 
             
             
         super().update(tilemap, movement=movement)
 
-        
+        if self.velocity[1] > 0:
+            self.air_time += 1 * (self.velocity[1] // 4)
+
+        if self.collisions["down"]:
+            self.air_time = 0
+
+        if self.air_time > 120:
+            return True
 
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
         if (abs(dis[1]) < 22):
             if (self.flip and dis[0] < 0):
                 self.walking == 1
                 
-                
-
             elif (not self.flip and dis[0] > 0):
                 self.walking == 10
-                
-                
             
             elif movement[0] != 0:
                 self.set_action("run_m")
@@ -284,8 +292,6 @@ class Enemy_m(PhysicsEntity):
                     self.game.sparks.append(Blood(self.rect().center, angle, 2 + random.random()))
                     self.game.particles.append(Particle(self.game, "particle2", self.rect().center, velocity=[math.cos(angle + math.pi) * speed * 0.5, math.sin(angle + math.pi) * speed * 0.5], frame=random.randint(0, 7)))
                 
-                
-                
                 return True
             
         if abs(self.game.player.dash_up) >= 48 and self.game.dead == 0:
@@ -299,8 +305,6 @@ class Enemy_m(PhysicsEntity):
                     speed = random.random() * 5
                     self.game.sparks.append(Blood(self.rect().center, angle, 2 + random.random()))
                     self.game.particles.append(Particle(self.game, "particle2", self.rect().center, velocity=[math.cos(angle + math.pi) * speed * 0.5, math.sin(angle + math.pi) * speed * 0.5], frame=random.randint(0, 7)))
-                
-                
                 
                 return True
         
@@ -320,12 +324,11 @@ class Enemy_m(PhysicsEntity):
                     self.game.sparks.append(Blood(self.rect().center, angle, 2 + random.random()))
                     self.game.particles.append(Particle(self.game, "particle2", self.rect().center, velocity=[math.cos(angle + math.pi) * speed * 0.5, math.sin(angle + math.pi) * speed * 0.5], frame=random.randint(0, 7)))
                 
-                
-                
                 return True
 
         if abs(self.game.player.dash_down) < 40 and abs(self.game.player.dash_up) < 48 and abs(self.game.player.dashing) < 48 and self.game.dead == 0 and self.game.player.iframes == 0:
             if self.rect().colliderect(self.game.player.rect()):
+                print("")
                 self.game.screenshake = max(30, self.game.screenshake)
                 self.game.sfx["hit"].play()
                 self.game.dead += 1
