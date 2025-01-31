@@ -195,7 +195,7 @@ class Enemy(PhysicsEntity):
                 self.game.player.velocity[1] = -4
                 self.game.player.jumps = 1
                 self.game.player.dash_down = 0
-                self.game.player.iframes += 10
+                self.game.player.iframes = 10
             
                 for i in range(30):
                     angle = random.random() * math.pi * 2
@@ -240,18 +240,17 @@ class Enemy_m(PhysicsEntity):
                 movement = (-1.5, movement[1])
                 if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
                     self.flip = self.flip
-                    if (self.collisions["right"]):
-                        movement = (1.0, -4.0)
-                    if (self.collisions["left"]):
-                        movement = (-1.0, -4.0)
+                    
             elif (not self.flip and dis[0] > 0):
                 movement = (1.5, movement[1])
                 if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 35)):
                     self.flip = self.flip
-                    if (self.collisions["right"]):
-                        movement = (1.0, -4.0)
-                    if (self.collisions["left"]):
-                        movement = (-1.0, -4.0)
+                    
+            else:
+                if (self.collisions["right"]):
+                    movement = (1.0, -4.0)
+                if (self.collisions["left"]):
+                    movement = (-1.0, -4.0)
             
 
             
@@ -320,7 +319,7 @@ class Enemy_m(PhysicsEntity):
                 self.game.sfx["hit"].play()
                 self.game.player.cooldown -= 35
                 self.game.player.velocity[1] = -4
-                self.game.player.iframes += 10
+                self.game.player.iframes = 10
                 self.game.player.jumps = 1
                 self.game.player.dash_down = 0
             
@@ -332,7 +331,7 @@ class Enemy_m(PhysicsEntity):
                 
                 return True
 
-        if abs(self.game.player.dash_down) < 40 and abs(self.game.player.dash_up) < 48 and abs(self.game.player.dashing) < 48 and self.game.dead == 0 and self.game.player.iframes == 1:
+        if abs(self.game.player.dash_down) < 40 and abs(self.game.player.dash_up) < 48 and abs(self.game.player.dashing) < 48 and self.game.dead == 0:
             if self.rect().colliderect(self.game.player.rect()):
                 print("")
                 
@@ -353,12 +352,12 @@ class Player(PhysicsEntity):
         self.cooldown = 1
         self.dash_up = 0
         self.dash_down = 0
-        self.iframes = 0
+        self.iframes = 30
     
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
-
-        self.iframes -= max(0, self.iframes - 1)
+        
+        self.iframes = max(0, self.iframes - 1)
         
         if self.velocity[1] > 0:
             self.air_time += 1 * (self.velocity[1] // 4)
