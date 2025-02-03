@@ -39,6 +39,8 @@ class Game:
         
         self.movement = [False, False]
         self.move = False
+
+        self.pause_tid = 1
         
         self.assets = {
             "decor": load_images("tiles/decor"),
@@ -126,6 +128,8 @@ class Game:
         
     click = False
 
+    
+
     def draw_text(self, text, x, y):
         text_surface = self.font.render(text, True, (255, 255, 255))
         self.screen.blit(text_surface, (x, y))
@@ -134,6 +138,8 @@ class Game:
         click = False  # Move outside the loop
 
         self.sfx["ambience"].stop()
+        pygame.mixer.music.set_volume(0.0)
+        pygame.mixer.music.stop()
 
         while True:
             self.screen.fill((0, 0, 0))  # Fill with black
@@ -168,6 +174,8 @@ class Game:
             
             pygame.display.flip()
             self.clock.tick(60)
+
+ 
 
     def run(self):
         running = True
@@ -284,9 +292,10 @@ class Game:
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        running = False
                         self.sfx["ambience"].stop()
-                        pygame.mixer.music.set_volume(0.1)
+                        Game().pause_menu()
+                        pygame.time.wait(self.pause_tid)
+                        
 
                     if event.key == pygame.K_a:
                         self.movement[0] = 1.7
@@ -362,6 +371,51 @@ class Game:
             screenshake_offset = (random.random() * self.screenshake - self.screenshake / 2, random.random() * self.screenshake - self.screenshake / 2)
             self.screen.blit(pygame.transform.scale(self.display_no_overlay, self.screen.get_size()), screenshake_offset)
             pygame.display.update()
+            self.clock.tick(60)
+    
+    def pause_menu(self):
+        self.pause = True
+        click = False  # Move outside the loop
+
+        self.sfx["ambience"].stop()
+        pygame.mixer.music.set_volume(0.1)
+
+        while self.pause:
+            self.pause_tid += 1
+            self.screen.fill((0, 0, 0))  # Fill with black
+
+            mx, my = pygame.mouse.get_pos()
+
+            button_1 = pygame.Rect(50, 100, 200, 50)
+            button_2 = pygame.Rect(50, 200, 200, 50)
+
+            pygame.draw.rect(self.screen, (255, 0, 0), button_1)
+            pygame.draw.rect(self.screen, (255, 0, 0), button_2)
+
+            self.draw_text("Resume Game", 70, 115)
+            self.draw_text("Main Menu", 110, 215)
+
+            if button_1.collidepoint((mx, my)) and click:
+                self.pause_tid = 0
+                self.pause = False
+                
+                
+            if button_2.collidepoint((mx, my)) and click:
+                self.pause = False
+                Game().main_menu()
+
+            click = False  # Reset click after processing events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    self.pause_tid = 0
+                    self.pause = False
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    click = True
+            
+            pygame.display.flip()
             self.clock.tick(60)
 
 Game().main_menu()
