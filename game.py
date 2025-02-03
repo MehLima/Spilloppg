@@ -34,6 +34,8 @@ class Game:
         self.display_no_overlay = pygame.Surface(self.res_half)
 
         self.clock = pygame.time.Clock()
+
+        self.font = pygame.font.Font(None, 36)  # Load font
         
         self.movement = [False, False]
         self.move = False
@@ -122,14 +124,65 @@ class Game:
         self.dead = 0
         self.transition = -30
         
-    def run(self):
-        pygame.mixer.music.load("data/music.wav")
-        pygame.mixer.music.set_volume(0.3)
-        pygame.mixer.music.play(-1)
-        
-        self.sfx["ambience"].play(-1)
-        
+    click = False
+
+    def draw_text(self, text, x, y):
+        text_surface = self.font.render(text, True, (255, 255, 255))
+        self.screen.blit(text_surface, (x, y))
+
+    def main_menu(self):
+        click = False  # Move outside the loop
+
+        self.sfx["ambience"].stop()
+
         while True:
+            self.screen.fill((0, 0, 0))  # Fill with black
+
+            mx, my = pygame.mouse.get_pos()
+
+            button_1 = pygame.Rect(50, 100, 200, 50)
+            button_2 = pygame.Rect(50, 200, 200, 50)
+
+            pygame.draw.rect(self.screen, (255, 0, 0), button_1)
+            pygame.draw.rect(self.screen, (255, 0, 0), button_2)
+
+            self.draw_text("Start Game", 70, 115)
+            self.draw_text("Quit", 110, 215)
+
+            if button_1.collidepoint((mx, my)) and click:
+                Game().run()  # Uncomment when you have a Game class
+            if button_2.collidepoint((mx, my)) and click:
+                pygame.quit()
+                sys.exit()
+
+            click = False  # Reset click after processing events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    click = True
+            
+            pygame.display.flip()
+            self.clock.tick(60)
+
+    def run(self):
+        running = True
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load("data/music.wav")
+            pygame.mixer.music.set_volume(0.3)
+            pygame.mixer.music.play(-1)
+        
+            self.sfx["ambience"].play(-1)
+        
+        else:
+            pygame.mixer.music.set_volume(0.3)
+            self.sfx["ambience"].play(-1)
+        
+        while running:
             self.current_time = pygame.time.get_ticks()
             
             self.display.fill((0, 0, 0, 0))
@@ -230,6 +283,11 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                        self.sfx["ambience"].stop()
+                        pygame.mixer.music.set_volume(0.1)
+
                     if event.key == pygame.K_a:
                         self.movement[0] = 1.7
                         self.move = True
@@ -306,4 +364,4 @@ class Game:
             pygame.display.update()
             self.clock.tick(60)
 
-Game().run()
+Game().main_menu()

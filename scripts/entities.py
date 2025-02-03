@@ -371,7 +371,7 @@ class Player(PhysicsEntity):
         
         self.iframes = max(0, self.iframes - 1)
 
-        if self.air_time_start > 4 and not self.wall_slide:
+        if self.air_time_start > 4 and not self.wall_slide and (self.collisions["left"] or self.collisions["right"]):
             self.air_time = 5
         
         if not self.collisions["down"] or not self.wall_slide:
@@ -389,6 +389,7 @@ class Player(PhysicsEntity):
             if not self.game.dead:
                 self.game.screenshake = max(30, self.game.screenshake)
             self.game.dead += 1
+            self.game.sfx["hit"].play()
         
         
             
