@@ -115,6 +115,15 @@ class Enemy(PhysicsEntity):
         elif random.random() < 0.01:
             self.walking = random.randint(30, 120)
         
+        dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
+        if (abs(dis[1]) < 22):
+            if (self.flip and dis[0] < 0):
+                self.walking = 0
+                
+            elif (not self.flip and dis[0] > 0):
+                self.walking = 0
+                
+        
         super().update(tilemap, movement=movement)
 
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
@@ -319,7 +328,7 @@ class Enemy_m(PhysicsEntity):
                 self.game.sfx["hit"].play()
                 self.game.player.cooldown -= 35
                 self.game.player.velocity[1] = -4
-                self.game.player.iframes = 20
+                self.game.player.iframes = 10
                 self.game.player.jumps = 1
                 self.game.player.dash_down = 0
             
@@ -361,6 +370,9 @@ class Player(PhysicsEntity):
         super().update(tilemap, movement=movement)
         
         self.iframes = max(0, self.iframes - 1)
+
+        if self.air_time_start > 4 and not self.wall_slide:
+            self.air_time = 5
         
         if not self.collisions["down"] or not self.wall_slide:
             self.air_time_start += 1
