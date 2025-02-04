@@ -52,7 +52,7 @@ class Game:
             "clouds" : load_images("clouds"),
             "enemy/idle" : Animation(load_images("entities/enemy/idle"), img_dur=6),
             "enemy/run" : Animation(load_images("entities/enemy/run"), img_dur=12),
-            "enemy/shoot" : Animation(load_images("entities/enemy/shoot"), img_dur=9),
+            "enemy/shoot" : Animation(load_images("entities/enemy/shoot"), img_dur=6),
             "enemy/idle_m" : Animation(load_images("entities/enemy_m/idle"), img_dur=6),
             "enemy/run_m" : Animation(load_images("entities/enemy_m/run"), img_dur=6),
             "player/idle" : Animation(load_images("entities/Mist walker/idle"), img_dur=8),
