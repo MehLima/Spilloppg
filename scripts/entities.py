@@ -116,7 +116,7 @@ class Enemy(PhysicsEntity):
             self.walking = random.randint(30, 120)
         
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
-        if (abs(dis[1]) < 22):
+        if (abs(dis[1]) < 30):
             if (self.flip and dis[0] < 0):
                 self.walking = 0
                 

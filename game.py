@@ -314,11 +314,17 @@ class Game:
                             self.player.velocity[0] = 2
                             self.player.jumps = 1
                             self.movement[0] = 0
+                            
                         
                     if self.player.dashing < 50:
                         if not self.transition:
                             if event.key == pygame.K_s:
                                 self.s = True
+                                if self.player.wall_slide:
+                                    self.player.wall_slide = False
+                                    if self.player.flip:
+                                        self.player.velocity[0] = 0
+                                
                             if event.key == pygame.K_w:
                                 self.w = True
                                 if self.player.jump():
