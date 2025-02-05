@@ -49,6 +49,7 @@ class Game:
             "stone": load_images("tiles/stone"),
             "player": load_image("entities/player.png"),
             "background" : load_image("background.png"),
+            "main_menu" : load_image("main_menu.png"),
             "clouds" : load_images("clouds"),
             "enemy/idle" : Animation(load_images("entities/enemy/idle"), img_dur=6),
             "enemy/run" : Animation(load_images("entities/enemy/run"), img_dur=12),
@@ -83,6 +84,7 @@ class Game:
         self.clouds = Clouds(self.assets["clouds"], count=16)
         
         self.scaled_background = pygame.transform.scale(self.assets["background"], self.res_half)
+        self.scaled_menu = pygame.transform.scale(self.assets["main_menu"], self.res)
         
         self.player = Player(self, (50, 50), (22, 37))
         
@@ -142,18 +144,18 @@ class Game:
         pygame.mixer.music.stop()
 
         while True:
-            self.screen.fill((0, 0, 0))  # Fill with black
+            self.display.fill((0, 0, 0))  # Fill with black
 
             mx, my = pygame.mouse.get_pos()
 
-            button_1 = pygame.Rect(50, 100, 200, 50)
-            button_2 = pygame.Rect(50, 200, 200, 50)
+            button_1 = pygame.Rect(self.screen_width * 0.388, self.screen_height * 0.91, 147, 50)
+            button_2 = pygame.Rect(self.screen_width * 0.505, self.screen_height * 0.91, 147, 50)
 
-            pygame.draw.rect(self.screen, (255, 0, 0), button_1)
-            pygame.draw.rect(self.screen, (255, 0, 0), button_2)
+            self.screen.blit(self.scaled_menu, (0, 0))
 
-            self.draw_text("Start Game", 70, 115)
-            self.draw_text("Quit", 110, 215)
+            #hitbox for knapper
+            #pygame.draw.rect(self.screen, (255, 0, 0), button_1)
+            #pygame.draw.rect(self.screen, (255, 0, 0), button_2)
 
             if button_1.collidepoint((mx, my)) and click:
                 Game().run()  # Uncomment when you have a Game class
