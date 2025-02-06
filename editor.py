@@ -94,6 +94,7 @@ class Editor:
                     pygame.quit()
                     sys.exit()
                     
+                    
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         self.clicking = True
@@ -122,6 +123,9 @@ class Editor:
                         self.right_clicking = False
                         
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
                     if event.key == pygame.K_a:
                         self.movement[0] = True
                     if event.key == pygame.K_d:
