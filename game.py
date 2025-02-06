@@ -12,8 +12,6 @@ from scripts.particle import Particle
 from scripts.spark import Spark, Blood
 from tkinter import *
 
-
-
 class Game:
     def __init__(self):
         pygame.init()
@@ -401,8 +399,8 @@ class Game:
             self.screen.blit(self.scaled_pause_menu, (0, 0))
 
             #hitbox for knapper
-            pygame.draw.rect(self.screen, (255, 0, 0), button_1)
-            pygame.draw.rect(self.screen, (255, 0, 0), button_2)
+            #pygame.draw.rect(self.screen, (255, 0, 0), button_1)
+            #pygame.draw.rect(self.screen, (255, 0, 0), button_2)
 
             if button_1.collidepoint((mx, my)) and click:
                 self.pause_tid = 0
