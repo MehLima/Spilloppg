@@ -326,7 +326,7 @@ class Game:
                                     self.player.wall_slide = False
                                     self.player.velocity[0] = 0
                                 
-                            if event.key == pygame.K_SPACE:
+                            if event.key == pygame.K_SPACE or event.key == pygame.K_w:
                                 self.w = True
                                 if self.player.jump():
                                     self.sfx["jump"].play()
@@ -346,7 +346,7 @@ class Game:
                         self.movement[1] = False
                         if event.key == pygame.K_a:
                             self.move = False
-                    if event.key == pygame.K_SPACE:
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_w:
                         self.w = False
                     if event.key == pygame.K_s:
                         self.s = False
