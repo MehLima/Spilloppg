@@ -130,8 +130,6 @@ class Game:
         
     click = False
 
-    
-
     def draw_text(self, text, x, y):
         text_surface = self.font.render(text, True, (255, 255, 255))
         self.screen.blit(text_surface, (x, y))

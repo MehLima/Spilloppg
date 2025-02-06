@@ -96,7 +96,7 @@ class Enemy(PhysicsEntity):
         super().__init__(game, "enemy", pos, size)
         
         self.walking = 0
-        self.fire_cd = 30
+        self.fire_cd = 20
         
     def update(self, tilemap, movement=(0, 0)):
         
@@ -116,7 +116,7 @@ class Enemy(PhysicsEntity):
             self.walking = random.randint(30, 120)
         
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
-        if (abs(dis[1]) < 22):
+        if (abs(dis[1]) < 30):
             if (self.flip and dis[0] < 0):
                 self.walking = 0
                 
@@ -127,7 +127,7 @@ class Enemy(PhysicsEntity):
         super().update(tilemap, movement=movement)
 
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
-        if (abs(dis[1]) < 22):
+        if (abs(dis[1]) < 30):
             if (self.flip and dis[0] < 0):
                 self.set_action("shoot")
                 self.fire_cd = max(0, self.fire_cd - 1)
@@ -148,21 +148,21 @@ class Enemy(PhysicsEntity):
             
             elif movement[0] != 0:
                 self.set_action("run")
-                self.fire_cd = min(60, self.fire_cd + 10)
+                self.fire_cd = min(40, self.fire_cd + 10)
             else:
                 self.set_action("idle")
-                self.fire_cd = min(60, self.fire_cd + 10)
+                self.fire_cd = min(40, self.fire_cd + 10)
         
         
         elif movement[0] != 0:
             self.set_action("run")
-            self.fire_cd = min(60, self.fire_cd + 10)
+            self.fire_cd = min(40, self.fire_cd + 10)
         else:
             self.set_action("idle")
-            self.fire_cd = min(60, self.fire_cd + 10)
+            self.fire_cd = min(40, self.fire_cd + 10)
         
         if self.fire_cd == 0:
-            self.fire_cd = min(120, self.fire_cd + 120)
+            self.fire_cd = min(90, self.fire_cd + 120)
 
             
         if abs(self.game.player.dashing) >= 48 and self.game.dead == 0:
@@ -371,7 +371,7 @@ class Player(PhysicsEntity):
         
         self.iframes = max(0, self.iframes - 1)
 
-        if self.air_time_start > 4 and not self.wall_slide:
+        if self.air_time_start > 4 and not self.wall_slide and (self.collisions["left"] or self.collisions["right"]):
             self.air_time = 5
         
         if not self.collisions["down"] or not self.wall_slide:
@@ -389,6 +389,7 @@ class Player(PhysicsEntity):
             if not self.game.dead:
                 self.game.screenshake = max(30, self.game.screenshake)
             self.game.dead += 1
+            self.game.sfx["hit"].play()
         
         
             
