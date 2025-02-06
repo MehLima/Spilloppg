@@ -50,6 +50,7 @@ class Game:
             "player": load_image("entities/player.png"),
             "background" : load_image("background.png"),
             "main_menu" : load_image("main_menu.png"),
+            "pause_menu" : load_image("pause_menu.png"),
             "clouds" : load_images("clouds"),
             "enemy/idle" : Animation(load_images("entities/enemy/idle"), img_dur=6),
             "enemy/run" : Animation(load_images("entities/enemy/run"), img_dur=12),
@@ -85,6 +86,7 @@ class Game:
         
         self.scaled_background = pygame.transform.scale(self.assets["background"], self.res_half)
         self.scaled_menu = pygame.transform.scale(self.assets["main_menu"], self.res)
+        self.scaled_pause_menu = pygame.transform.scale(self.assets["pause_menu"], self.res)
         
         self.player = Player(self, (50, 50), (22, 37))
         
@@ -389,18 +391,18 @@ class Game:
 
         while self.pause:
             self.pause_tid += 1
-            self.screen.fill((0, 0, 0))  # Fill with black
+            self.display.fill((0, 0, 0))  # Fill with black
 
             mx, my = pygame.mouse.get_pos()
 
-            button_1 = pygame.Rect(50, 100, 200, 50)
-            button_2 = pygame.Rect(50, 200, 200, 50)
+            button_1 = pygame.Rect(self.screen_width * 0.42, self.screen_height * 0.47, 222, 68)
+            button_2 = pygame.Rect(self.screen_width * 0.42, self.screen_height * 0.69, 222, 68)
 
+            self.screen.blit(self.scaled_pause_menu, (0, 0))
+
+            #hitbox for knapper
             pygame.draw.rect(self.screen, (255, 0, 0), button_1)
             pygame.draw.rect(self.screen, (255, 0, 0), button_2)
-
-            self.draw_text("Resume Game", 70, 115)
-            self.draw_text("Main Menu", 110, 215)
 
             if button_1.collidepoint((mx, my)) and click:
                 self.pause_tid = 0
