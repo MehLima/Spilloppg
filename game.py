@@ -146,8 +146,8 @@ class Game:
 
             mx, my = pygame.mouse.get_pos()
 
-            button_1 = pygame.Rect(self.screen_width * 0.388, self.screen_height * 0.91, 147, 50)
-            button_2 = pygame.Rect(self.screen_width * 0.505, self.screen_height * 0.91, 147, 50)
+            button_1 = pygame.Rect(self.screen_width * 0.388, self.screen_height * 0.91, self.screen_width * 0.115, self.screen_height * 0.05)
+            button_2 = pygame.Rect(self.screen_width * 0.506, self.screen_height * 0.91, self.screen_width * 0.115, self.screen_height * 0.05)
 
             self.screen.blit(self.scaled_menu, (0, 0))
 
@@ -391,8 +391,8 @@ class Game:
 
             mx, my = pygame.mouse.get_pos()
 
-            button_1 = pygame.Rect(self.screen_width * 0.42, self.screen_height * 0.47, 222, 68)
-            button_2 = pygame.Rect(self.screen_width * 0.42, self.screen_height * 0.69, 222, 68)
+            button_1 = pygame.Rect(self.screen_width * 0.42, self.screen_height * 0.47, self.screen_width * 0.175, self.screen_height * 0.08)
+            button_2 = pygame.Rect(self.screen_width * 0.42, self.screen_height * 0.69, self.screen_width * 0.175, self.screen_height * 0.08)
 
             self.screen.blit(self.scaled_pause_menu, (0, 0))
 
