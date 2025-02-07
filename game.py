@@ -105,10 +105,18 @@ class Game:
         self.tilemap.load("data/maps/" + str(map_id) + ".json")
         
         self.leaf_spawners = []
-        for tree in self.tilemap.extract([("large_decor", 2)], keep=True):
-            self.leaf_spawners.append(pygame.Rect(4 + tree["pos"][0], 4 + tree["pos"][1], 23, 13))
-        for bush in self.tilemap.extract([("large_decor", 1)], keep=True):
-            self.leaf_spawners.append(pygame.Rect(4 + bush["pos"][0], 1 + bush["pos"][1], 18, 10))
+        for tree1 in self.tilemap.extract([("large_decor", 3)], keep=True):
+            self.leaf_spawners.append(pygame.Rect(27 + tree1["pos"][0], 14 + tree1["pos"][1], 65, 21))
+        for tree2 in self.tilemap.extract([("large_decor", 4)], keep=True):
+            self.leaf_spawners.append(pygame.Rect(25 + tree2["pos"][0], 20 + tree2["pos"][1], 55, 40))
+        for tree3 in self.tilemap.extract([("large_decor", 5)], keep=True):
+            self.leaf_spawners.append(pygame.Rect(20 + tree3["pos"][0], 20 + tree3["pos"][1], 60, 25))
+        for bush1 in self.tilemap.extract([("large_decor", 1)], keep=True):
+            self.leaf_spawners.append(pygame.Rect(4 + bush1["pos"][0], 1 + bush1["pos"][1], 18, 10))
+        for bush2 in self.tilemap.extract([("large_decor", 10)], keep=True):
+            self.leaf_spawners.append(pygame.Rect(25 + bush2["pos"][0], 40 + bush2["pos"][1], 20, 20))
+        for bush3 in self.tilemap.extract([("large_decor", 11)], keep=True):
+            self.leaf_spawners.append(pygame.Rect(9 + bush3["pos"][0], 18 + bush3["pos"][1], 13, 7))
             
         self.enemies = []       
         for spawner in self.tilemap.extract([("spawners", 0), ("spawners", 1), ("spawners", 2)]):
@@ -225,7 +233,7 @@ class Game:
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
             
             for rect in self.leaf_spawners:
-                if random.random() * 299999 < rect.width * rect.height:
+                if random.random() * 499999 < rect.width * rect.height:
                     pos = (rect.x + random.random() * rect.width, rect.y + random.random() * rect.height)
                     self.particles.append(Particle(self, "leaf", pos, velocity=[0.1, 0.3], frame=random.randint(0, 20)))
             
