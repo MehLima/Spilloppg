@@ -369,7 +369,7 @@ class Game:
                 self.player.velocity[0] = 0
                 self.player.velocity[1] = 0
                 self.player.dashing = 50
-                self.player.cooldown = 30
+                self.player.cooldown = 10
                 self.player.iframes = 20
                 self.player.dash_up = 0
                 self.player.dash_down = 0
