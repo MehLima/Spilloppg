@@ -142,7 +142,7 @@ class Enemy(PhysicsEntity):
                 self.fire_cd = max(0, self.fire_cd - 1)
                 if self.fire_cd == 0:
                     self.game.sfx["shoot"].play()
-                    self.game.projectiles.append([[self.rect().centerx -2, self.rect().centery -10], 1.5, 0])
+                    self.game.projectiles.append([[self.rect().centerx -2, self.rect().centery -5], 1.5, 0])
                     for i in range(4):
                         self.game.sparks.append(Spark(self.game.projectiles[-1][0], random.random() - 0.5, 2 + random.random()))
             

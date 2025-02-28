@@ -118,7 +118,7 @@ class Game:
         for bush3 in self.tilemap.extract([("large_decor", 11)], keep=True):
             self.leaf_spawners.append(pygame.Rect(9 + bush3["pos"][0], 18 + bush3["pos"][1], 13, 7))
             
-        self.enemies = []       
+        self.enemies = []
         for spawner in self.tilemap.extract([("spawners", 0), ("spawners", 1), ("spawners", 2)]):
             if spawner["variant"] == 0:
                 self.player.pos = spawner["pos"]
@@ -265,13 +265,13 @@ class Game:
                         self.sparks.append(Spark(projectile[0], random.random() - 0.5 + (math.pi if projectile[1] > 0 else 0), 2 + random.random()))
                 elif projectile[2] > 360:
                     self.projectiles.remove(projectile)
-                elif abs(self.player.dashing) < 30:
+                elif abs(self.player.dash_down) < 40 and abs(self.player.dash_up) < 48 and abs(self.player.dashing) < 48 and self.dead == 0 and self.player.iframes == 0:
                     if self.player.rect().collidepoint(projectile[0]):
                         if not self.dead:
                             self.projectiles.remove(projectile)
                             self.dead += 1
                             self.sfx["hit"].play()
-                            self.screenshake = max(30, self.screenshake)   
+                            self.screenshake = max(30, self.screenshake)
             
             for spark in self.sparks.copy():
                 kill = spark.update()
